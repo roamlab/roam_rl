@@ -1,5 +1,5 @@
 from baselines.ppo_her import ppo_her
-from roamrl.openai_baselines.ppo import PPO
+from roam_rl.openai_baselines.ppo import PPO
 
 
 class PPOHER(PPO):

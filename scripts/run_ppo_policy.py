@@ -1,7 +1,7 @@
 import configparser
 import argparse
 from roam_utils.provenance.path_generator import PathGenerator
-from roamrl.openai_baselines.ppo import PPO
+from roam_rl.openai_baselines.ppo import PPO
 import os
 import ast
 from roam_utils.provenance import config_helpers

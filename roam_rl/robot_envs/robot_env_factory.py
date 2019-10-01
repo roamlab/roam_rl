@@ -1,4 +1,4 @@
-from roamrl.utils.factory import make
+from roam_rl.utils.factory import make
 import gym
 
 

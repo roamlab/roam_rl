@@ -1,4 +1,4 @@
-from roamrl.utils.random_sampler import RandomSampler
+from roam_rl.utils.random_sampler import RandomSampler
 import numpy as np
 import ast
 

@@ -1,7 +1,7 @@
 import ast
 from gym.utils import seeding
-from roamrl.robot_envs.robot_env_factory import make_robot_env
-from roamrl.utils.path_generator import PathGenerator
+from roam_rl.robot_envs.robot_env_factory import make_robot_env
+from roam_rl.utils.path_generator import PathGenerator
 from gym.wrappers import FlattenDictWrapper
 import warnings
 try:

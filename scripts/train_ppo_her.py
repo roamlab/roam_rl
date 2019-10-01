@@ -1,13 +1,13 @@
 import time
 import configparser
 import argparse
-from roamrl.utils.path_generator import PathGenerator
+from roam_rl.utils.path_generator import PathGenerator
 import roam_utils.provenance.provenance as provenance
 from roam_utils.logging import roam_logger
 import logging
 import socket
 from datetime import datetime
-from roamrl.openai_baselines.ppo_her import PPOHER
+from roam_rl.openai_baselines.ppo_her import PPOHER
 import os
 
 

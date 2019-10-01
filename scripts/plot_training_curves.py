@@ -1,6 +1,6 @@
 import os, sys
 import configparser
-from roamrl.utils.path_generator import PathGenerator
+from roam_rl.utils.path_generator import PathGenerator
 import matplotlib.pyplot as plt
 
 import numpy as np

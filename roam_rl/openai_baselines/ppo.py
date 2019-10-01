@@ -3,10 +3,10 @@ from baselines.common import set_global_seeds
 from baselines.ppo2 import ppo2
 from baselines import logger
 from roam_utils.provenance.path_generator import PathGenerator
-from roamrl.openai_baselines.utils import VecEnvMaker
+from roam_rl.openai_baselines.utils import VecEnvMaker
 from baselines.common.vec_env.vec_normalize import VecNormalize
-from roamrl.utils.factory import make
-from roamrl.openai_baselines.utils import get_network_args_descr_dict
+from roam_rl.utils.factory import make
+from roam_rl.openai_baselines.utils import get_network_args_descr_dict
 from roam_utils.provenance.config_helpers import pull_from_config
 
 
