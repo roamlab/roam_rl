@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class RewardFunc(object):
 
     def __init__(self):

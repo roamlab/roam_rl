@@ -1,18 +1,12 @@
-from roam_rl.utils.random_sampler import RandomSampler
+from roam_rl.robot_env.random_sampler import RandomSampler
 import numpy as np
 import ast
 
 
 class RectangularGoalSampler(RandomSampler):
 
-    def __init__(self):
+    def __init__(self, config_data, section_name):
         super().__init__()
-        self.x_range = None
-        self.y_range = None
-        self.center = None
-
-    def initialize_from_config(self, config_data, section_name):
-        super().initialize_from_config(config_data, section_name)
         self.x_range = np.asarray([float(x) for x in ast.literal_eval(config_data.get(section_name, 'x_range'))])
         self.y_range = np.asarray([float(x) for x in ast.literal_eval(config_data.get(section_name, 'y_range'))])
         self.center = np.asarray([float(x) for x in ast.literal_eval(config_data.get(section_name, 'center'))])

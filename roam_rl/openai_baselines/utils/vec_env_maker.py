@@ -6,26 +6,9 @@ from baselines.common.vec_env.vec_normalize import VecNormalize
 from copy import deepcopy
 
 
-def get_network_args_descr_dict(network):
-    if network == 'mlp':
-        net_args = {
-            'num_layers': 'int',
-            'num_hidden': 'int',
-            'layer_norm': 'bool',
-        }
-    elif network == 'lstm':
-        net_args = {
-            'nlstm': 'int',
-            'layer_norm': 'bool',
-        }
-    else:
-        raise ValueError('network {} unknown')
-    return net_args
-
-
 class VecEnvMaker(object):
 
-    """ Callable class that takes instance of roam_learning.robot_envs.EnvMaker and returns either a DummyVecEnv,
+    """ Callable class that takes instance of roam_learning.robot_env.EnvMaker and returns either a DummyVecEnv,
      SubprocVecEnv or ShmemVecEnv """
 
     def __init__(self, config_data, section_name):
@@ -43,7 +26,7 @@ class VecEnvMaker(object):
 
     def __call__(self, env_maker, seed=None, monitor_file=None):
         """
-        :param env_maker: instance of roam_learning.robot_envs.EnvMaker
+        :param env_maker: instance of roam_learning.robot_env.EnvMaker
         :param seed: int that is used to generate seeds for vectorized envs
         :param monitor_file: path to a .csv file to log episode rewards, lengths etc,. of the vectorized envs
         :return: instance of either DummyVecEnv, SubprocVecEnv or ShmemVecEnv

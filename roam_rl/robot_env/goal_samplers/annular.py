@@ -1,4 +1,4 @@
-from roam_rl.utils.random_sampler import RandomSampler
+from roam_rl.robot_env.random_sampler import RandomSampler
 import numpy as np
 import ast
 from math import pi, cos, sin
@@ -6,7 +6,7 @@ from math import pi, cos, sin
 
 class AnnularGoalSampler(RandomSampler):
 
-    def initialize_from_config(self, config_data, section_name):
+    def __init__(self, config_data, section_name):
         super().__init__()
         self.radius_range = \
             np.asarray([float(x) for x in ast.literal_eval(config_data.get(section_name, 'radius_range'))])

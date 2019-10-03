@@ -2,12 +2,28 @@ import os
 from baselines.common import set_global_seeds
 from baselines.ppo2 import ppo2
 from baselines import logger
-from roam_utils.provenance.path_generator import PathGenerator
-from roam_rl.openai_baselines.utils import VecEnvMaker
 from baselines.common.vec_env.vec_normalize import VecNormalize
-from roam_rl.utils.factory import make
-from roam_rl.openai_baselines.utils import get_network_args_descr_dict
+from roam_utils.provenance.path_generator import PathGenerator
 from roam_utils.provenance.config_helpers import pull_from_config
+from roam_rl.openai_baselines.utils import VecEnvMaker
+from roam_rl.utils.factory import make
+
+
+def _get_network_args_descr_dict(network):
+    if network == 'mlp':
+        net_args = {
+            'num_layers': 'int',
+            'num_hidden': 'int',
+            'layer_norm': 'bool',
+        }
+    elif network == 'lstm':
+        net_args = {
+            'nlstm': 'int',
+            'layer_norm': 'bool',
+        }
+    else:
+        raise ValueError('network {} unknown')
+    return net_args
 
 
 class PPO(object):
@@ -21,7 +37,7 @@ class PPO(object):
         params = self._get_parameter_descr_dict()    # ppo parameters
         params = pull_from_config(params, config_data, section_name)
         network = params['network']             # network parameters
-        params.update(pull_from_config(get_network_args_descr_dict(network), config_data, section_name))
+        params.update(pull_from_config(_get_network_args_descr_dict(network), config_data, section_name))
         self.params = params
         env_maker_section_name = config_data.get(section_name, 'env_maker')
         self.env_maker = make(config_data, env_maker_section_name)

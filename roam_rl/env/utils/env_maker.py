@@ -1,6 +1,6 @@
 import ast
 from gym.utils import seeding
-from roam_rl.robot_envs.robot_env_factory import make_robot_env
+from roam_rl.env.utils import make_env
 from roam_rl.utils.path_generator import PathGenerator
 from gym.wrappers import FlattenDictWrapper
 import warnings
@@ -29,8 +29,8 @@ class EnvMaker(object):
         self.experiment_dir = experiment_dir
 
     def __call__(self):
-        robot_env_section_name = self.config_data.get(self.section_name, 'robot_env')
-        env = make_robot_env(config_data=self.config_data, section_name=robot_env_section_name)
+        env_section_name = self.config_data.get(self.section_name, 'env')
+        env = make_env(config_data=self.config_data, section_name=env_section_name)
         if type(self.seed) is int:
             env.seed(self.seed)
         else:

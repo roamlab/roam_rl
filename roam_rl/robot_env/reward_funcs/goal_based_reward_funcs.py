@@ -1,4 +1,4 @@
-from roam_rl.robot_envs.reward_funcs.reward_func import RewardFunc
+from roam_rl.robot_env.reward_funcs.reward_func import RewardFunc
 import numpy as np
 
 
