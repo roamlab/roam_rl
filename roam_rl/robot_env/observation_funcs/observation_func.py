@@ -1,10 +1,6 @@
-
 class ObservationFunc(object):
 
-    def __init__(self):
-        pass
-
-    def initialize_from_config(self, config_data, section_name):
+    def __init__(self, config_data, section_name):
         pass
 
     def __call__(self, obs):
@@ -14,4 +10,4 @@ class ObservationFunc(object):
         return env_obs
 
     def get_obs(self, obs):
-        raise EnvironmentError
+        raise NotImplementedError
