@@ -1,4 +1,4 @@
-from roam_rl.robot_env.random_sampler import RandomSampler
+from roam_rl.robot_env.components.random_sampler import RandomSampler
 import numpy as np
 import ast
 

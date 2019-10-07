@@ -10,4 +10,4 @@ class ObservationFunc(object):
         return env_obs
 
     def get_obs(self, obs):
-        raise NotImplementedError
+        return obs

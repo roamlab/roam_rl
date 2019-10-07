@@ -1,4 +1,4 @@
-from roam_rl.robot_env.reward_funcs.reward_func import RewardFunc
+from roam_rl.robot_env.components import RewardFunc
 import numpy as np
 
 
@@ -7,17 +7,16 @@ def goal_distance(goal_a, goal_b):
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 
-class GoalBasedRewardFunc(RewardFunc):
+class GoalRewardFunc(RewardFunc):
 
     def __call__(self, achieved_goal, desired_goal, action=None):
         raise NotImplementedError
 
 
-class DenseGoalBasedRewardFunc(GoalBasedRewardFunc):
+class DenseGoalRewardFunc(GoalRewardFunc):
 
     def __init__(self, config_data, section_name):
-        super().__init__()
-        super().initialize_from_config(config_data, section_name)
+        super().__init__(config_data, section_name)
         achieved_goal_reward = config_data.get(section_name, 'achieved_goal_reward')
         if achieved_goal_reward == 'none':
             self.compute_reward_achieved_goal = self.zero_fn(config_data, section_name)
@@ -29,7 +28,6 @@ class DenseGoalBasedRewardFunc(GoalBasedRewardFunc):
             self.compute_reward_achieved_goal = self.reward_for_achieved_goal__smooth_abs(config_data, section_name)
         else:
             raise ValueError('achieved_goal_reward_type {} not recognized'.format(achieved_goal_reward))
-        # self.compute_reward_achieved_goal.__init__(config_data, section_name)
 
         action_reward_type = config_data.get(section_name, 'action_reward')
         if action_reward_type == 'none':
@@ -40,7 +38,6 @@ class DenseGoalBasedRewardFunc(GoalBasedRewardFunc):
             self.compute_reward_action = self.reward_for_action_taken__action_limiting(config_data, section_name)
         else:
             raise ValueError('action_reward_type {} not recognized'.format(action_reward_type))
-        # self.compute_reward_action.initialize_from_config(config_data, section_name)
 
     def __call__(self, achieved_goal=None, desired_goal=None, info={}):
         action = info['action']
@@ -103,14 +100,10 @@ class DenseGoalBasedRewardFunc(GoalBasedRewardFunc):
             return -1.0 * beta ** 2 * (np.mean(np.cosh(action / beta)) - 1)
 
 
-class SparseGoalBasedRewardFunc(RewardFunc):
+class SparseGoalRewardFunc(RewardFunc):
 
-    def __init__(self):
-        super().__init__()
-        self.goal_radius = None
-
-    def initialize_from_config(self, config_data, section_name):
-        super().initialize_from_config(config_data, section_name)
+    def __init__(self, config_data, section_name):
+        super().__init__(config_data, section_name)
         self.goal_radius = config_data.getfloat(section_name, 'goal_radius')
 
     def __call__(self, achieved_goal, desired_goal, action=None):
