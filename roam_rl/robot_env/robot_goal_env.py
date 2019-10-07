@@ -45,6 +45,7 @@ class RobotGoalEnv(gym.GoalEnv):
                                                                                            'action_space_bounds'))]
         self.action_space = gym.spaces.Box(low=self.action_space_bounds[0], high=self.action_space_bounds[1],
                                            shape=(self.robot_world.get_action_dim(),))
+
         if config_data.has_option(section_name, 'render_gui'):
             render_gui_section_name = config_data.get(section_name, 'render_gui')
             self.render_gui = make(config_data, render_gui_section_name)
@@ -75,9 +76,12 @@ class RobotGoalEnv(gym.GoalEnv):
         env_obs = self.get_obs(obs)
         env_obs['desired_goal'] = deepcopy(self.goal)
         self.steps = 0
-        if self.render_gui is not None:
-            self.render_gui.reset()
-            self.render_gui.set_goal(self.goal)
+        try:
+            if self.render_gui is not None:
+                self.render_gui.reset()
+                self.render_gui.set_goal(self.goal)
+        except AttributeError:
+            pass
         return env_obs
 
     def render(self, mode='human'):
