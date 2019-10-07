@@ -89,7 +89,7 @@ class RobotGoalEnv(gym.GoalEnv):
                                                                   self.render_gui.frame_count)
                     self.render_gui.save_frame_based_on_fps(save_path)
         else:
-            warn('render() called with initializing render_gui for robot_world')
+            warn('render() called without initializing render_gui for robot_world')
 
     def close(self):
         pass
@@ -101,5 +101,5 @@ class RobotGoalEnv(gym.GoalEnv):
         return [seed]
 
     def compute_reward(self, achieved_goal, desired_goal, info):
-        self.reward_func(achieved_goal=achieved_goal, desired_goal=desired_goal, info=info)
+        return self.reward_func(achieved_goal=achieved_goal, desired_goal=desired_goal, info=info)
 

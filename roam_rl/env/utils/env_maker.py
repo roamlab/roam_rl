@@ -35,8 +35,11 @@ class EnvMaker(object):
             env.seed(self.seed)
         else:
             warnings.warn("seed not set, using global RNG ")
-        if self.experiment_dir is not None and hasattr(env, 'render_gui'):
-            env.render_gui.set_render_dir(PathGenerator.get_record_sim_dir(self.experiment_dir))
+        if self.experiment_dir is not None:
+            try:
+                env.render_gui.set_render_dir(PathGenerator.get_record_sim_dir(self.experiment_dir))
+            except AttributeError:
+                pass
         return env
 
     def __deepcopy__(self, memodict={}):

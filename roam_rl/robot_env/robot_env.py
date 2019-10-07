@@ -81,7 +81,7 @@ class RobotEnv(Env):
                                                                   self.render_gui.frame_count)
                     self.render_gui.save_frame_based_on_fps(save_path)
         else:
-            warn('render() called with initializing render_gui for robot_world')
+            warn('render() called without initializing render_gui for robot_world')
 
     def close(self):
         pass
