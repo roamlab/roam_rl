@@ -18,7 +18,6 @@ setup(
         'coverage',
         'configparser',
         'tensorflow==1.13.2',
-        'cffi',
         'gym',
         'baselines',
         ],

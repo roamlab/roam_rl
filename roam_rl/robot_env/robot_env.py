@@ -1,12 +1,12 @@
 import gym
-from roam_rl.utils.factory import make
-from roam_rl.utils.path_generator import PathGenerator
 from gym.utils import seeding
 from collections import OrderedDict
 import numpy as np
 import ast
 from warnings import warn
 from roam_rl.env import Env
+from roam_utils.factory import make
+from roam_rl.utils.path_generator import PathGenerator
 
 
 class RobotEnv(Env):
@@ -72,11 +72,6 @@ class RobotEnv(Env):
         self.steps = 0
         return self.get_obs(obs)
 
-    def seed(self, seed=None):
-        self.np_random, seed = gym.utils.seeding.np_random(seed)
-        self.state_sampler.set_rng(self.np_random)
-        return [seed]
-
     def render(self, mode='human'):
         if self.render_gui is not None:
             self.render_gui.render()
@@ -90,3 +85,11 @@ class RobotEnv(Env):
 
     def close(self):
         pass
+
+    def seed(self, seed=None):
+        self.np_random, seed = gym.utils.seeding.np_random(seed)
+        self.state_sampler.set_rng(self.np_random)
+        return [seed]
+
+
+

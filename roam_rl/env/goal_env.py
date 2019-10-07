@@ -11,6 +11,7 @@ class GoalEnv(gym.GoalEnv):
     render
     close
     seed
+    compute_reward
 
     """
 

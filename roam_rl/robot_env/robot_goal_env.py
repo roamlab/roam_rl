@@ -1,5 +1,3 @@
-from roam_rl.utils.factory import make
-from roam_rl.utils.path_generator import PathGenerator
 import gym
 from gym.utils import seeding
 from copy import deepcopy
@@ -7,6 +5,8 @@ from collections import OrderedDict
 import numpy as np
 import ast
 from warnings import warn
+from roam_utils.factory import make
+from roam_rl.utils.path_generator import PathGenerator
 
 
 class RobotGoalEnv(gym.GoalEnv):
@@ -29,7 +29,7 @@ class RobotGoalEnv(gym.GoalEnv):
         state_sampler_section_name = config_data.get(section_name, 'state_sampler')
         self.state_sampler = make(config_data, state_sampler_section_name)
         reward_func_section_name = config_data.get(section_name, 'reward_func')
-        self.compute_reward = make(config_data, reward_func_section_name)
+        self.reward_func = make(config_data, reward_func_section_name)
         obs_func_section_name = config_data.get(section_name, 'observation_func')
         self.get_obs = make(config_data, obs_func_section_name)
         goal_sampler_section_name = config_data.get(section_name, 'goal_sampler')
@@ -80,12 +80,6 @@ class RobotGoalEnv(gym.GoalEnv):
             self.render_gui.set_goal(self.goal)
         return env_obs
 
-    def seed(self, seed=None):
-        self.np_random, seed = gym.utils.seeding.np_random(seed)
-        self.state_sampler.set_rng(self.np_random)
-        self.goal_sampler.set_rng(self.np_random)
-        return [seed]
-
     def render(self, mode='human'):
         if self.render_gui is not None:
             self.render_gui.render()
@@ -99,4 +93,13 @@ class RobotGoalEnv(gym.GoalEnv):
 
     def close(self):
         pass
+
+    def seed(self, seed=None):
+        self.np_random, seed = gym.utils.seeding.np_random(seed)
+        self.state_sampler.set_rng(self.np_random)
+        self.goal_sampler.set_rng(self.np_random)
+        return [seed]
+
+    def compute_reward(self, achieved_goal, desired_goal, info):
+        self.reward_func(achieved_goal=achieved_goal, desired_goal=desired_goal, info=info)
 

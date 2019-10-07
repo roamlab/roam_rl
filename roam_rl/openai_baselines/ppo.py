@@ -6,7 +6,7 @@ from baselines.common.vec_env.vec_normalize import VecNormalize
 from roam_utils.provenance.path_generator import PathGenerator
 from roam_utils.provenance.config_helpers import pull_from_config
 from roam_rl.openai_baselines.utils import VecEnvMaker
-from roam_rl.utils.factory import make
+from roam_utils.factory import make
 
 
 def _get_network_args_descr_dict(network):
