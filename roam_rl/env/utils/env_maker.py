@@ -40,8 +40,7 @@ class EnvMaker(object):
         return env
 
     def __deepcopy__(self, memodict={}):
-        env_maker = self.__class__()
-        env_maker.initialize_from_config(self.config_data, self.section_name)
+        env_maker = self.__class__(self.config_data, self.section_name)
         env_maker.seed = self.seed
         env_maker.experiment_dir = self.experiment_dir
         return env_maker
