@@ -4,8 +4,5 @@ Reinforcement learning algorithm implementations and wrappers for other benchmar
 ### Installation 
 
 ```console 
-pip install -fe . # installs roam_rl with some basic dependencies
-pip install -fr requirements.txt # for functional installation
+$ bash setup.sh
 ```
-
-For more details see `requirements.txt`
