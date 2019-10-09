@@ -1,5 +1,8 @@
 #!/bin/bash
-set -o errexit
+
+# stop execution on the first command that errors 
+set -o errexit 
+
 # This script is a one stop solution to setting up the environment for roam_rl on a machine.
 
 # OpenAI Issues: baselines dependencies have not been setup well at all and here are some known issues
@@ -17,14 +20,14 @@ set -o errexit
 sudo apt install libopenmpi-dev zlib1g-dev
 # baselines requires tensorflow to be manually installed
 pip install tensorflow==1.13.2
-pip install git+https://github.com/openai/baselines#egg=baselines
+pip install --force-reinstall git+https://github.com/openai/baselines#egg=baselines
 
 # gym (must be installed after baselines. baselines installation forces install of gym from PyPI)
-pip install git+https://github.com/openai/gym#egg=gym
+pip install --force-reinstall git+https://github.com/openai/gym#egg=gym
 
 
 # roam_utils
-pip install git+ssh://git@github.com/roamlab/roam_utils@master#egg=roam_utils
+pip install --force-reinstall git+ssh://git@github.com/roamlab/roam_utils@master#egg=roam_utils
 
 # install roam_rl
 pip install -e .

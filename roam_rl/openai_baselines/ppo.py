@@ -3,7 +3,7 @@ from baselines.common import set_global_seeds
 from baselines.ppo2 import ppo2
 from baselines import logger
 from baselines.common.vec_env.vec_normalize import VecNormalize
-from roam_utils.provenance.path_generator import PathGenerator
+from roam_rl.utils import PathGenerator
 from roam_utils.provenance.config_helpers import pull_from_config
 from roam_rl.openai_baselines.utils import VecEnvMaker
 from roam_utils.factory import make

@@ -1,9 +1,9 @@
 import os
-from roam_utils.provenance.path_generator import make_dir
-from roam_utils.provenance.path_generator import PathGenerator as _PathGenerator
+from roam_utils.provenance.directory_helpers import make_dir
+from roam_utils.provenance import path_generator as pg
 
 
-class PathGenerator(_PathGenerator):
+class PathGenerator(pg.PathGenerator):
 
     def __init__(self):
         super().__init__()

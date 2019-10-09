@@ -1,8 +1,8 @@
 import time
 import configparser
 import argparse
-from roam_rl.utils.path_generator import PathGenerator
-import roam_utils.provenance.provenance as provenance
+from roam_rl.utils import PathGenerator
+from roam_utils.provenance import config_helpers 
 from roam_utils.logging import roam_logger
 import logging
 import socket
@@ -18,7 +18,7 @@ def main(args):
     experiment_no = config_data.get('experiment', 'experiment_no')
     robot_name = config_data.get('experiment', 'robot_name')
     experiment_dir = PathGenerator.get_ppo_experiment_dir(os.environ['EXPERIMENTS_DIR'], robot_name, experiment_no)
-    provenance.save_config(config_data, experiment_dir, experiment_no)
+    config_helpers.save_config(config_data, experiment_dir, experiment_no)
 
     # setup roam logging
     base_level = config_data.getint('logging', 'script_base_level')
