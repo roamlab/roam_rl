@@ -36,6 +36,7 @@ def main(args):
     model, env = ppo.load(model_seed=load_model_seed, env_seed=env_seed)
     ppo.run(model=model, env=env)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='A string specifying the path to a config file')
