@@ -16,8 +16,10 @@ set -o errexit
 #
 # Solution: We install the required version of tensorflow first then install baselines and then finally install gym
 
+sudo apt-get update
+
 # baselines
-sudo apt install libopenmpi-dev zlib1g-dev
+yes | sudo apt install libopenmpi-dev zlib1g-dev
 # baselines requires tensorflow to be manually installed
 pip install tensorflow==1.13.2
 pip install --force-reinstall git+https://github.com/openai/baselines#egg=baselines
