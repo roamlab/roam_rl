@@ -25,7 +25,7 @@ pip install tensorflow==1.13.2
 pip install --force-reinstall git+https://github.com/openai/baselines#egg=baselines
 
 # gym (must be installed after baselines. baselines installation forces install of gym from PyPI)
-pip install --force-reinstall git+https://github.com/openai/gym#egg=gym
+pip install --force-reinstall git+https://github.com/openai/gym.git@0.15.2
 
 
 # roam_utils
