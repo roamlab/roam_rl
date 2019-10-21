@@ -1,6 +1,6 @@
 import configparser
 import argparse
-from roam_utils.provenance.path_generator import PathGenerator
+from roam_rl.utils.path_generator import PathGenerator
 from roam_rl.openai_baselines.ppo import PPO
 import os
 import ast
@@ -31,7 +31,6 @@ def main(args):
     ppo_section_name = config_data.get('experiment', 'ppo')
     ppo = PPO(config_data, ppo_section_name)
     ppo.set_experiment_dir(experiment_dir)
-    ppo.learn()
 
     model, env = ppo.load(model_seed=load_model_seed, env_seed=env_seed)
     ppo.run(model=model, env=env)
