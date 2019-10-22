@@ -29,7 +29,7 @@ pip install --force-reinstall git+https://github.com/openai/gym.git@0.15.2
 
 
 # roam_utils
-pip install --force-reinstall git+ssh://git@github.com/roamlab/roam_utils@master#egg=roam_utils
+pip install --force-reinstall git+https://git@github.com/roamlab/roam_utils@master#egg=roam_utils
 
 # install roam_rl
 pip install -e .
