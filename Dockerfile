@@ -4,6 +4,6 @@ COPY . /root/roam_rl
 
 WORKDIR /root/roam_rl
 
-RUN sed -e 's/sudo //g' -i setup.sh
+RUN sed -e 's/sudo //g' -i setup.sh && bash setup.sh
 
-RUN bash setup.sh
+CMD /bin/bash
