@@ -2,12 +2,8 @@ import ast
 from gym.utils import seeding
 from roam_rl.env.utils import make_env
 from roam_rl.utils.path_generator import PathGenerator
-from gym.wrappers import FlattenDictWrapper
+from roam_utils import factory
 import warnings
-try:
-    from gym.wrappers import DictInputWrapper
-except ImportError:
-    warnings.warn("Could not import DictInputWrapper from gym.wrappers")
 
 
 class EnvMaker(object):
@@ -49,7 +45,7 @@ class EnvMaker(object):
         return env_maker
 
 
-class WrapObsEnvMaker(EnvMaker):
+class WrappedEnvMaker(EnvMaker):
 
     """ env maker class that also wraps the base env with gym observation wrapper
 
@@ -60,19 +56,29 @@ class WrapObsEnvMaker(EnvMaker):
 
     def __init__(self, config_data, section_name):
         super().__init__(config_data, section_name)
-        if config_data.has_option(section_name, 'observation_wrapper'):
-            observation_wrapper = config_data.get(section_name, 'observation_wrapper')
-            if observation_wrapper == "FlattenDictWrapper":
-                self.observation_wrapper = FlattenDictWrapper
-            elif observation_wrapper == "DictInputWrapper":
-                self.observation_wrapper = DictInputWrapper
-            self.observation_keys = ast.literal_eval(config_data.get(section_name, 'observation_keys'))
 
     def __call__(self):
         env = super().__call__()
-        if self.observation_wrapper is not None:
-            assert type(self.observation_keys) is list, 'observation keys must be a list'
-            for obs_key in self.observation_keys:
-                assert type(obs_key) is str, 'observation keys must be a list of strings'
-            env = self.observation_wrapper(env, self.observation_keys)
+        config_data = self.config_data
+        section_name = self.section_name
+        if config_data.has_option(section_name, 'wrappers'):
+            wrappers = ast.literal_eval(config_data.get(section_name, 'wrappers'))
+            for wrapper_section_name in wrappers:
+                wrapper = factory.get_attr(config_data, wrapper_section_name)
+                env = wrapper(env, config_data, wrapper_section_name)
         return env
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
