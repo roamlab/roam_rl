@@ -18,21 +18,6 @@ class Env(gym.Env):
     def __init__(self, config_data, section_name):
         pass
 
-    def step(self, action):
-        super().step(action)
-
-    def reset(self):
-        super().reset()
-
-    def render(self, mode='human'):
-        super().render(mode=mode)
-
-    def close(self):
-        super().close()
-
-    def seed(self, seed=None):
-        super().seed(seed=seed)
-
 
 
 
