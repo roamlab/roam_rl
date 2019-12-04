@@ -26,7 +26,7 @@ def main(args):
     config_data.read(config_file)
     for section in copy_sections:
         config_helpers.copy_section_from_old_config_to_new_config(old_config=run_config_data, new_config=config_data,
-                                                                  section=section)
+                                                                  section=section, overwrite=True)
 
     ppo_section_name = config_data.get('experiment', 'ppo')
     ppo = PPO(config_data, ppo_section_name)
