@@ -48,17 +48,4 @@ class VecEnvMaker(object):
             envs = VecMonitor(envs, filename=monitor_file)
         if self.normalize:
             envs = VecNormalize(envs) # normalizes both the observations and the rewards by default
-            # TODO: provide options to set the prarmeters of the VecNormalize wrapper
-
-        # setup the render method
-        if isinstance(envs, VecNormalize):
-            def render():
-                for i in range(self.nenvs):
-                    envs.venv.envs[0].render()
-            envs.render = render
-        elif isinstance(envs, DummyVecEnv):
-            def render():
-                for i in range(self.nenvs):
-                    envs.envs[0].render()
-            envs.render = render
         return envs
