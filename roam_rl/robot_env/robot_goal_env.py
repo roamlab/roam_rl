@@ -1,15 +1,16 @@
 import gym
 from gym.utils import seeding
-from copy import deepcopy
 from collections import OrderedDict
 import numpy as np
 import ast
 from warnings import warn
+from roam_rl.env import GoalEnv
 from roam_utils.factory import make
 from roam_rl.utils.path_generator import PathGenerator
+from copy import deepcopy
 
 
-class RobotGoalEnv(gym.GoalEnv):
+class RobotGoalEnv(GoalEnv):
 
     """ goal based env class for robot world
         - robot_world which can either be simulated or real
@@ -23,6 +24,7 @@ class RobotGoalEnv(gym.GoalEnv):
     """
 
     def __init__(self, config_data, section_name):
+        super().__init__(config_data=config_data, section_name=section_name)
         self.max_episode_steps = config_data.getint(section_name, 'max_episode_steps')
         robot_world_section_name = config_data.get(section_name, 'robot_world')
         self.robot_world = make(config_data, robot_world_section_name)
@@ -32,8 +34,10 @@ class RobotGoalEnv(gym.GoalEnv):
         self.reward_func = make(config_data, reward_func_section_name)
         obs_func_section_name = config_data.get(section_name, 'observation_func')
         self.get_obs = make(config_data, obs_func_section_name)
+
         goal_sampler_section_name = config_data.get(section_name, 'goal_sampler')
         self.goal_sampler = make(config_data, goal_sampler_section_name)
+        
         env_obs = self.reset()
         observation_spaces = OrderedDict()
         for key in env_obs.keys():
@@ -45,15 +49,19 @@ class RobotGoalEnv(gym.GoalEnv):
                                                                                            'action_space_bounds'))]
         self.action_space = gym.spaces.Box(low=self.action_space_bounds[0], high=self.action_space_bounds[1],
                                            shape=(self.robot_world.get_action_dim(),))
-
+        self.steps = 0
+        self.render_gui = None
         if config_data.has_option(section_name, 'render_gui'):
             render_gui_section_name = config_data.get(section_name, 'render_gui')
             self.render_gui = make(config_data, render_gui_section_name)
-            self.render_gui.add_subject(self.robot_world)
+
+        self.np_random = np.random
 
     def step(self, action):
+        assert type(action) is np.ndarray
         self.robot_world.take_action(action.reshape(-1, 1))
         obs = self.robot_world.get_obs()
+
         env_obs = self.get_obs(obs)
         env_obs['desired_goal'] = deepcopy(self.goal)
         assert 'achieved_goal' in env_obs.keys(), 'env_obs does not contain "achieved goal", ensure observation' \
@@ -71,27 +79,18 @@ class RobotGoalEnv(gym.GoalEnv):
         state = self.state_sampler.sample()
         self.robot_world.reset_time()
         self.robot_world.set_state(state.reshape(-1, 1))
+
         self.goal = self.goal_sampler.sample()
         obs = self.robot_world.get_obs()
         env_obs = self.get_obs(obs)
         env_obs['desired_goal'] = deepcopy(self.goal)
+
         self.steps = 0
-        try:
-            if self.render_gui is not None:
-                self.render_gui.reset()
-                self.render_gui.set_goal(self.goal)
-        except AttributeError:
-            pass
         return env_obs
 
     def render(self, mode='human'):
         if self.render_gui is not None:
             self.render_gui.render()
-            if hasattr(self.render_gui, 'record_sim'):
-                if self.render_gui.record_sim is True:
-                    save_path = PathGenerator.get_gui_render_path(self.render_gui.render_dir,
-                                                                  self.render_gui.frame_count)
-                    self.render_gui.save_frame_based_on_fps(save_path)
         else:
             warn('render() called without initializing render_gui for robot_world')
 

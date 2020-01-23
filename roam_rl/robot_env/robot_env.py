@@ -49,7 +49,6 @@ class RobotEnv(Env):
         if config_data.has_option(section_name, 'render_gui'):
             render_gui_section_name = config_data.get(section_name, 'render_gui')
             self.render_gui = make(config_data, render_gui_section_name)
-            self.render_gui.add_subject(self.robot_world)
 
         self.np_random = np.random
 
@@ -67,6 +66,7 @@ class RobotEnv(Env):
 
     def reset(self):
         state = self.state_sampler.sample()
+        self.robot_world.reset_time()
         self.robot_world.set_state(state.reshape(-1, 1))
         obs = self.robot_world.get_obs()
         self.steps = 0
@@ -75,11 +75,6 @@ class RobotEnv(Env):
     def render(self, mode='human'):
         if self.render_gui is not None:
             self.render_gui.render()
-            if hasattr(self.render_gui, 'record_sim'):
-                if self.render_gui.record_sim is True:
-                    save_path = PathGenerator.get_gui_render_path(self.render_gui.render_dir,
-                                                                  self.render_gui.frame_count)
-                    self.render_gui.save_frame_based_on_fps(save_path)
         else:
             warn('render() called without initializing render_gui for robot_world')
 
