@@ -75,6 +75,7 @@ class PPO(object):
         env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path)
 
         # Learn
+        # pylint: disable=E1125
         model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path)   # learn model
 
         # Save
@@ -87,7 +88,7 @@ class PPO(object):
 
     def load(self, model_seed, env_seed=0, monitor_file=None):
         """ load a trained model from model_path
-        supply config_data to modify env behaviour
+            supply config_data to modify env behaviour
         """
         env = self.vec_env_maker(self.env_maker, seed=env_seed, monitor_file=monitor_file)
 
@@ -106,5 +107,6 @@ class PPO(object):
         model.act_model.action = model.act_model.pi
         while True:
             action, _, _states, _ = model.step(obs)
+            # pylint: disable=W0612
             obs, rewards, dones, info = env.step(action)
             env.render()
