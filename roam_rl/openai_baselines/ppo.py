@@ -79,10 +79,6 @@ class PPO(object):
 
         # Save
         model.save(PathGenerator.get_ppo_model_path(self.experiment_dir, self.seed))
-        # If the vectorized envs are normalized, then save the normalization state parameters
-        # The normalization state parameters must be reloaded while using the learn't ppo model
-        if isinstance(env, VecNormalize):
-            env.save_state(save_path=PathGenerator.get_env_path(self.experiment_dir, self.seed))
         env.close()
 
     def set_experiment_dir(self, dir_name):
@@ -94,12 +90,11 @@ class PPO(object):
         supply config_data to modify env behaviour
         """
         env = self.vec_env_maker(self.env_maker, seed=env_seed, monitor_file=monitor_file)
-        if isinstance(env, VecNormalize):
-            env.restore_state(PathGenerator.get_env_path(self.experiment_dir, model_seed))
 
         # train for 0 timesteps to load
         self.params['total_timesteps'] = 0
         model_path = PathGenerator.get_ppo_model_path(self.experiment_dir, model_seed)
+        # pylint: disable=E1125
         model = self._learn(env=env, **self.params, load_path=model_path)
         return model, env
 
