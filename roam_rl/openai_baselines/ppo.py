@@ -61,6 +61,7 @@ class PPO(object):
             'network': 'str',
             'value_network': 'str',
             'log_interval': 'int',
+            'save_interval': 'int',
             'total_timesteps': 'float2int'  # to read int from int sci notation
         }
         return parameters
