@@ -23,10 +23,13 @@ class PathGenerator(pg.PathGenerator):
         return experiment_dir
 
     @staticmethod
-    def get_ppo_model_path(experiments_dir, seed):
+    def get_ppo_model_path(experiments_dir, seed, model_checkpoint=None):
         model_dir = os.path.join(experiments_dir, 'seed-{}'.format(seed))
         make_dir(model_dir)
-        model_path = os.path.join(model_dir, 'model_{}.pkl'.format(seed))
+        if model_checkpoint:
+            model_path = os.path.join(model_dir, 'checkpoints/{}'.format(str(model_checkpoint).zfill(5)))
+        else:
+            model_path = os.path.join(model_dir, 'model_{}.pkl'.format(seed))
         return model_path
 
     @staticmethod

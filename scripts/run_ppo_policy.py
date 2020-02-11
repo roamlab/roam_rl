@@ -9,6 +9,7 @@ from roam_utils.provenance import config_helpers
 
 def main(args):
     run_config_file = args.config_file
+    model_checkpoint = args.model_checkpoint
     run_config_data = configparser.ConfigParser()
     run_config_data.read(run_config_file)
     experiment_no = run_config_data.get('experiment', 'experiment_no')
@@ -32,12 +33,13 @@ def main(args):
     ppo = PPO(config_data, ppo_section_name)
     ppo.set_experiment_dir(experiment_dir)
 
-    model, env = ppo.load(model_seed=load_model_seed, env_seed=env_seed)
+    model, env = ppo.load(model_seed=load_model_seed, model_checkpoint=model_checkpoint, env_seed=env_seed)
     ppo.run(model=model, env=env)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='A string specifying the path to a config file')
+    parser.add_argument('-c', dest='model_checkpoint', type=int, help='Optional: From which checkpoint to load the model from')
     arg = parser.parse_args()
     main(arg)

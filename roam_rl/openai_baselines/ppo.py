@@ -87,7 +87,7 @@ class PPO(object):
         self.env_maker.set_experiment_dir(dir_name)
         self.experiment_dir = dir_name
 
-    def load(self, model_seed, env_seed=0, monitor_file=None):
+    def load(self, model_seed, model_checkpoint=None, env_seed=0, monitor_file=None):
         """ load a trained model from model_path
             supply config_data to modify env behaviour
         """
@@ -95,7 +95,7 @@ class PPO(object):
 
         # train for 0 timesteps to load
         self.params['total_timesteps'] = 0
-        model_path = PathGenerator.get_ppo_model_path(self.experiment_dir, model_seed)
+        model_path = PathGenerator.get_ppo_model_path(self.experiment_dir, model_seed, model_checkpoint)
         # pylint: disable=E1125
         model = self._learn(env=env, **self.params, load_path=model_path)
         return model, env
