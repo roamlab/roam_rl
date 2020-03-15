@@ -7,26 +7,11 @@ from roam_rl.utils import PathGenerator
 from roam_utils.provenance.config_helpers import pull_from_config
 from roam_rl.openai_baselines.utils import VecEnvMaker
 from roam_utils.factory import make
-
-
-def _get_network_args_descr_dict(network):
-    if network == 'mlp':
-        net_args = {
-            'num_layers': 'int',
-            'num_hidden': 'int',
-            'layer_norm': 'bool',
-        }
-    elif network == 'lstm':
-        net_args = {
-            'nlstm': 'int',
-            'layer_norm': 'bool',
-        }
-    else:
-        raise ValueError('network {} unknown')
-    return net_args
+from roam_rl.openai_baselines.models import get_network
 
 
 class PPO(object):
+
     """  Wrapper for ppo2 from OpenAI baselines """
 
     def __init__(self, config_data, section_name):
@@ -34,19 +19,29 @@ class PPO(object):
         self.experiment_dir = None
         self.config_data = config_data
         self.section_name = section_name
-        params = self._get_parameter_descr_dict()    # ppo parameters
+
+        # ppo parameters
+        params = self._get_parameter_descr_dict()               
         params = pull_from_config(params, config_data, section_name)
-        network = params['network']             # network parameters
-        params.update(pull_from_config(_get_network_args_descr_dict(network), config_data, section_name))
+
+        # build and set network function to be passed to learn
+        network_section_name = params['network']                
+        params['network'] = get_network(config_data, network_section_name)
         self.params = params
+
+        # env
         env_maker_section_name = config_data.get(section_name, 'env_maker')
         self.env_maker = make(config_data, env_maker_section_name)
         vec_env_maker_section_name = config_data.get(section_name, 'vec_env_maker')
         self.vec_env_maker = VecEnvMaker(config_data, vec_env_maker_section_name)
+
         self.seed = config_data.getint(section_name, 'seed')
 
     def _get_parameter_descr_dict(self):
-        """ Returns a dictionary of parameter names and their type. These parameters will be obtained from config  """
+        
+        """ Returns a dictionary of parameter names and their type. 
+        These parameters will be obtained from config  """
+        
         parameters = {
             'nsteps': 'int',
             'ent_coef': 'float',
@@ -64,6 +59,7 @@ class PPO(object):
             'save_interval': 'int',
             'total_timesteps': 'float2int'  # to read int from int sci notation
         }
+
         return parameters
 
     def learn(self, model_path=None):
