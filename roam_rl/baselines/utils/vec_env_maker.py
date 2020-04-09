@@ -11,8 +11,8 @@ class VecEnvMaker(object):
     """ Callable class that takes instance of roam_learning.robot_env.EnvMaker and returns either a DummyVecEnv,
      SubprocVecEnv or ShmemVecEnv """
 
-    def __init__(self, config_data, section_name):
-        vectorize_type = config_data.get(section_name, 'type')
+    def __init__(self, config, section):
+        vectorize_type = config.get(section, 'type')
         if vectorize_type == 'dummy':
             self.vec_env_wrapper = DummyVecEnv
         elif vectorize_type == 'subproc':
@@ -21,8 +21,8 @@ class VecEnvMaker(object):
             self.vec_env_wrapper = ShmemVecEnv
         else:
             raise ValueError('vectorize_type {} not recognized'.format(vectorize_type))
-        self.nenvs = config_data.getint(section_name, 'nenvs')
-        self.normalize = config_data.getboolean(section_name, 'normalize')
+        self.nenvs = config.getint(section, 'nenvs')
+        self.normalize = config.getboolean(section, 'normalize')
 
     def __call__(self, env_maker, seed=None, monitor_file=None):
         """

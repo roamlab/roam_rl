@@ -23,7 +23,7 @@ class Env(gym.Env):
 
     """
 
-    def __init__(self, config_data, section_name):
+    def __init__(self, config, section):
         pass
 
     def step(self, action):

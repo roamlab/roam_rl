@@ -1,9 +1,7 @@
-import ast
 from gym.utils import seeding
 from roam_rl.env.utils import make_env
-from roam_rl.utils.path_generator import PathGenerator
-from roam_utils import factory
 import warnings
+from confac import get, make
 
 
 class EnvMaker(object):
@@ -11,11 +9,11 @@ class EnvMaker(object):
     __call__ method creates an env and sets seed for the env if one has been configured
     """
 
-    def __init__(self, config_data, section_name):
+    def __init__(self, config, section):
         self.seed = None
         self.experiment_dir = None
-        self.config_data = config_data
-        self.section_name = section_name
+        self.config = config
+        self.section = section
 
     def set_seed(self, seed):
         assert isinstance(seed, int)
@@ -25,21 +23,16 @@ class EnvMaker(object):
         self.experiment_dir = experiment_dir
 
     def __call__(self):
-        env_section_name = self.config_data.get(self.section_name, 'env')
-        env = make_env(config_data=self.config_data, section_name=env_section_name)
+        env_section = self.config.get(self.section, 'env')
+        env = make_env(config=self.config, section=env_section)
         if type(self.seed) is int:
             env.seed(self.seed)
         else:
             warnings.warn("seed not set, using global RNG ")
-        if self.experiment_dir is not None:
-            try:
-                env.render_gui.set_render_dir(PathGenerator.get_record_sim_dir(self.experiment_dir))
-            except AttributeError:
-                pass
         return env
 
     def __deepcopy__(self, memodict={}):
-        env_maker = self.__class__(self.config_data, self.section_name)
+        env_maker = self.__class__(self.config, self.section)
         env_maker.seed = self.seed
         env_maker.experiment_dir = self.experiment_dir
         return env_maker
@@ -54,31 +47,17 @@ class WrappedEnvMaker(EnvMaker):
 
     """
 
-    def __init__(self, config_data, section_name):
-        super().__init__(config_data, section_name)
+    def __init__(self, config, section):
+        super().__init__(config, section)
 
     def __call__(self):
         env = super().__call__()
-        config_data = self.config_data
-        section_name = self.section_name
-        if config_data.has_option(section_name, 'wrappers'):
-            wrappers = ast.literal_eval(config_data.get(section_name, 'wrappers'))
-            for wrapper_section_name in wrappers:
-                wrapper = factory.get_attr(config_data, wrapper_section_name)
-                env = wrapper(env, config_data, wrapper_section_name)
+        config = self.config
+        section = self.section
+        if config.has_option(section, 'wrappers'):
+            wrappers = config.getlist(section, 'wrappers')
+            for wrapper_section in wrappers:
+                wrapper = get(config, wrapper_section)
+                env = wrapper(env, config, wrapper_section)
         return env
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

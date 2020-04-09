@@ -3,13 +3,13 @@ import tensorflow as tf
 from baselines.a2c import utils
 from baselines.a2c.utils import conv, fc, conv_to_fc, batch_to_seq, seq_to_batch
 from baselines.common.models import get_network_builder
-from roam_utils.factory import make
+from confac import make
 
 class NetworkFn:
 
     def __init__(self, config, section):
         raise NotImplementedError
-    
+
     def __call__(self, *args, **kwargs):
         #pylint: disable=E1101
         return self._network_fn(*args, **kwargs)
@@ -27,7 +27,6 @@ class MLP(NetworkFn):
         if config.has_option(section, 'layer_norm'):
             network_args['layer_norm'] = config.getboolean(section, 'activation')
         self._network_fn = get_network_builder('mlp')(**network_args)
-    
 
 class LSTM(NetworkFn):
 
@@ -63,9 +62,9 @@ class MLP_LSTM_MLP(NetworkFn):
             network_args['layer_norm_out'] = config.getboolean(section, 'layer_norm_out')
         if config.has_option(section, 'activation'):
             network_args['activation'] = eval(config.get(section, 'activation'))
-    
-        def mlp_lstm_mlp(nlstm=128, layer_norm_lstm=False, num_layers_in=0, num_hidden_in=0, num_layers_out=0, num_hidden_out=0, 
-            activation=tf.tanh, layer_norm_in=False, layer_norm_out=False):
+
+        def mlp_lstm_mlp(nlstm=128, layer_norm_lstm=False, num_layers_in=0, num_hidden_in=0, num_layers_out=0, \
+                         num_hidden_out=0, activation=tf.tanh, layer_norm_in=False, layer_norm_out=False):
 
             def network_fn(X, nenv=1):
                 nbatch = X.shape[0]
@@ -113,13 +112,15 @@ class MLP_LSTM_MLP(NetworkFn):
 def get_network(config, section):
 
     """
-    Returns callable class for building network. Section in config can either have 'type' or 'entrypoint' as option
-    The type can be set to mlp, lstm, etc,. The entrypoint option specifies the entrypoint to class definition 
-    that inherits NetworkFn. However, the only strict requirement is the class instance returns a network when called. 
-    Refer baselines.common.models for the complete list of values type can take and the requirements for using custom 
+    Returns callable class for building network. The section in config can either have 'type' or 'entrypoint' as option
+    The type can be set to mlp, lstm, etc,. The entrypoint option specifies the entrypoint to class definition
+    that inherits NetworkFn. This however is not a strict requirement as long as the object returns a network
+    when called.
+
+    Refer baselines.common.models for the complete list of values type can take and the requirements for using custom
     network function.
 
-    Ex.
+    Example:
 
     [my_network]
     type = mlp
@@ -132,14 +133,14 @@ def get_network(config, section):
     entrypoint: roam_rl.openai_baselines.models:MLP
     num_layers = 2
     num_hidden = 128
-    
+
     """
 
     assert (config.has_option(section, 'type') and config.has_option(section, 'entrypoint')) is False,\
-        "cannot specify both type and entrypoint"
+    "cannot specify both type and entrypoint"
 
     _mapping = {
-        'mlp': MLP, 
+        'mlp': MLP,
         'lstm': LSTM,
         'mlp_lstm_mlp':MLP_LSTM_MLP
     }
@@ -147,5 +148,7 @@ def get_network(config, section):
     if config.has_option(section, 'type'):
         _type = config.get(section, 'type')
         return _mapping[_type](config, section)
-    else:
+    elif config.has_option(section, 'entrypoint'):
         return make(config, section)
+    else:
+        raise ValueError("network unknown")

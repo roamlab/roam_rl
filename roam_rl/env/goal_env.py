@@ -15,7 +15,7 @@ class GoalEnv(gym.GoalEnv):
     compute_reward
 
     and also set these attributes
-    
+
     action_space: The Space object corresponding to valid actions
     observation_space: The Space object corresponding to valid observations
     reward_range: A tuple corresponding to the min and max possible rewards
@@ -24,7 +24,7 @@ class GoalEnv(gym.GoalEnv):
 
     """
 
-    def __init__(self, config_data, section_name):
+    def __init__(self, config, section):
         pass
 
     def step(self, action):

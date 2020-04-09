@@ -1,9 +1,13 @@
-FROM python:3.6
+# To be used as a base image for your project. In your project's image
+# make sure you place your MuJoCo key at /root/.mujoco/
 
-COPY . /root/roam_rl
+FROM rlworkgroup/garage-base
 
-WORKDIR /root/roam_rl
+COPY . /root/code/roam_rl/
 
-RUN sed -e 's/sudo //g' -i setup.sh && bash setup.sh
+WORKDIR /root/code/roam_rl/
+
+RUN make default
 
 CMD /bin/bash
+

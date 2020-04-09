@@ -5,8 +5,7 @@ import numpy as np
 import ast
 from warnings import warn
 from roam_rl.env import GoalEnv
-from roam_utils.factory import make
-from roam_rl.utils.path_generator import PathGenerator
+from confac import make
 from copy import deepcopy
 
 
@@ -23,37 +22,36 @@ class RobotGoalEnv(GoalEnv):
         - goal sampler samples new goal for each episode
     """
 
-    def __init__(self, config_data, section_name):
-        super().__init__(config_data=config_data, section_name=section_name)
-        self.max_episode_steps = config_data.getint(section_name, 'max_episode_steps')
-        robot_world_section_name = config_data.get(section_name, 'robot_world')
-        self.robot_world = make(config_data, robot_world_section_name)
-        state_sampler_section_name = config_data.get(section_name, 'state_sampler')
-        self.state_sampler = make(config_data, state_sampler_section_name)
-        reward_func_section_name = config_data.get(section_name, 'reward_func')
-        self.reward_func = make(config_data, reward_func_section_name)
-        obs_func_section_name = config_data.get(section_name, 'observation_func')
-        self.get_obs = make(config_data, obs_func_section_name)
+    def __init__(self, config, section):
+        super().__init__(config=config, section=section)
+        self.max_episode_steps = config.getint(section, 'max_episode_steps')
+        robot_world_section = config.get(section, 'robot_world')
+        self.robot_world = make(config, robot_world_section)
+        state_sampler_section = config.get(section, 'state_sampler')
+        self.state_sampler = make(config, state_sampler_section)
+        reward_func_section = config.get(section, 'reward_func')
+        self.reward_func = make(config, reward_func_section)
+        obs_func_section = config.get(section, 'observation_func')
+        self.get_obs = make(config, obs_func_section)
 
-        goal_sampler_section_name = config_data.get(section_name, 'goal_sampler')
-        self.goal_sampler = make(config_data, goal_sampler_section_name)
-        
+        goal_sampler_section = config.get(section, 'goal_sampler')
+        self.goal_sampler = make(config, goal_sampler_section)
+
         env_obs = self.reset()
         observation_spaces = OrderedDict()
         for key in env_obs.keys():
             observation_spaces[key] = gym.spaces.Box(-np.inf, np.inf, shape=env_obs[key].shape, dtype='float32')
         self.observation_space = gym.spaces.Dict(observation_spaces)
         self.action_space_bounds = [-1.0, 1.0]
-        if config_data.has_option(section_name, 'action_space_bounds'):
-            self.action_space_bounds = [float(x) for x in ast.literal_eval(config_data.get(section_name,
-                                                                                           'action_space_bounds'))]
+        if config.has_option(section, 'action_space_bounds'):
+            self.action_space_bounds = [float(x) for x in config.get(section,'action_space_bounds')]
         self.action_space = gym.spaces.Box(low=self.action_space_bounds[0], high=self.action_space_bounds[1],
                                            shape=(self.robot_world.get_action_dim(),))
         self.steps = 0
         self.render_gui = None
-        if config_data.has_option(section_name, 'render_gui'):
-            render_gui_section_name = config_data.get(section_name, 'render_gui')
-            self.render_gui = make(config_data, render_gui_section_name)
+        if config.has_option(section, 'render_gui'):
+            render_gui_section = config.get(section, 'render_gui')
+            self.render_gui = make(config, render_gui_section)
 
         self.np_random = np.random
 

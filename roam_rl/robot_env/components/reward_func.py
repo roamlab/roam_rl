@@ -1,6 +1,6 @@
 class RewardFunc(object):
 
-    def __init__(self, config_data, section_name):
+    def __init__(self, config, section):
         pass
 
     def __call__(self, *args, **kwargs):

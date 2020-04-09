@@ -1,6 +1,6 @@
 import os, sys
-import configparser
-from roam_rl.utils.path_generator import PathGenerator
+from confac import ConfigParser
+from roam_rl.baselines.ppo import PPO
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -11,16 +11,15 @@ def main(argv):
     config_file = argv[1]
     path_to_experiments = argv[2]
 
-    run_config_data = configparser.ConfigParser()
-    run_config_data.read(config_file)
+    run_config = ConfigParser()
+    run_config.read(config_file)
+    experiment_no = run_config.get('experiment', 'experiment_no')
+    robot_name = run_config.get('experiment', 'robot_name')
 
-    experiment_no = run_config_data.get('run_ppo_policy', 'experiment_no')
-    robot_name = run_config_data.get('run_ppo_policy', 'robot_name')
-
-    experiment_dir = PathGenerator.get_ppo_experiment_dir(path_to_experiments, robot_name, experiment_no)
-    config_file = PathGenerator.get_config_pathname(experiment_dir, experiment_no)
-    config_data = configparser.ConfigParser()
-    config_data.read(config_file)
+    experiment_dir = PPO.get_experiment_dir(path_to_experiments, robot_name, experiment_no)
+    config_file = PPO.get_config_path(experiment_dir, experiment_no)
+    config = ConfigParser()
+    config.read(config_file)
 
     plot_training(experiment_no, robot_name, experiment_dir)
 

@@ -1,13 +1,13 @@
-FROM python:3.6
+# To be used as a base image for your project. In your project's image
+# make sure you place your MuJoCo key at /root/.mujoco/
 
-RUN pip install tensorflow==1.5.0
+FROM rlworkgroup/garage-base
 
-COPY . /root/roam_rl
+COPY . /root/code/roam_rl/
 
-WORKDIR /root/roam_rl
+WORKDIR /root/code/roam_rl/
 
-RUN sed -e 's/sudo //g' -i setup.sh \
-&& sed -i '/tensorflow/d' setup.sh \
-&& bash setup.sh
+RUN make no-avx
 
 CMD /bin/bash
+
