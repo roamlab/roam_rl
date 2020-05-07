@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="roam_rl",
-    version="1.0.0",
+    version="0.0.1",
     author="Gagan Khandate",
-    description="ROAM Lab package for Reinforcement Learning algorithms",
+    description= "Helper classes for openai/baselines",
     url="https://github.com/roamlab/roamrl/",
     packages=[package for package in find_packages()
                     if package.startswith('roam_rl')],
@@ -14,7 +14,5 @@ setup(
         'scipy',
         'pandas',
         'matplotlib',
-        'tqdm',
-        'configparser',
         ],
     )
