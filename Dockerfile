@@ -87,7 +87,7 @@ RUN pip install --upgrade pip
 # In this step only the presence of the file mjkey.txt is required, so we only
 # create an empty file
 RUN touch /root/.mujoco/mjkey.txt && \
-  pip install mujoco_py<2.0 && \
+  pip install mujoco_py && \
   make default && \
   rm -r /root/.cache/pip && \
   rm /root/.mujoco/mjkey.txt
