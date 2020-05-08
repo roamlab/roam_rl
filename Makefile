@@ -7,7 +7,7 @@ default: test-env
 	pip install tensorflow==1.14
 	make common
 
-# pre-requisities for garage and baselines, we use garage's well maintained setup script
+# dependencies for baselines, we use garage's well maintained setup script
 setup:	
 	if [ -d "tmp" ]; then\
 	    rm -rf tmp;\
@@ -28,9 +28,9 @@ test-env:
 	fi
 
 common:  
-	pip install --force-reinstall git+https://git@github.com/openai/baselines@master#egg=baselines 
-	pip install --force-reinstall git+https://git@github.com/openai/gym@master#egg=gym 
 	pip install git+https://git@github.com/roamlab/confac@master#egg=confac
+	pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env
+	pip install --force-reinstall git+https://git@github.com/openai/baselines@master#egg=baselines
 	pip install -e .
 
 gpu: test-env
