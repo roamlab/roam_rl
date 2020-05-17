@@ -25,7 +25,6 @@ class VecEnvMaker(object):
         self.normalize_obs = config.getboolean(section, 'normalize_obs', fallback=False)
         self.normalize_ret = config.getboolean(section, 'normalize_ret', fallback=False)
 
-
     def __call__(self, env_maker, seed=None, monitor_file=None):
         """
         :param env_maker: instance of roam_learning.robot_env.EnvMaker
@@ -49,7 +48,5 @@ class VecEnvMaker(object):
         if monitor_file is not None:
             envs = VecMonitor(envs, filename=monitor_file)
         if self.normalize_obs or self.normalize_ret:
-            print('obs', self.normalize_obs)
-            print('ret', self.normalize_ret)
-            envs = VecNormalize(envs, ob=self.normalize_obs, ret=self.normalize_ret, use_tf=True) # normalizes both the observations and the rewards by default
+            envs = VecNormalize(envs, ob=self.normalize_obs, ret=self.normalize_ret, use_tf=True)
         return envs
