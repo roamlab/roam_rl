@@ -22,7 +22,8 @@ class VecEnvMaker(object):
         else:
             raise ValueError('vectorize_type {} not recognized'.format(vectorize_type))
         self.nenvs = config.getint(section, 'nenvs')
-        self.normalize = config.getboolean(section, 'normalize')
+        self.normalize_obs = config.getboolean(section, 'normalize_obs', fallback=False)
+        self.normalize_ret = config.getboolean(section, 'normalize_ret', fallback=False)
 
     def __call__(self, env_maker, seed=None, monitor_file=None):
         """
@@ -46,6 +47,6 @@ class VecEnvMaker(object):
         # Monitor the envs before normalization
         if monitor_file is not None:
             envs = VecMonitor(envs, filename=monitor_file)
-        if self.normalize:
-            envs = VecNormalize(envs) # normalizes both the observations and the rewards by default
+        if self.normalize_obs or self.normalize_ret:
+            envs = VecNormalize(envs, ob=self.normalize_obs, ret=self.normalize_ret, use_tf=True)
         return envs
