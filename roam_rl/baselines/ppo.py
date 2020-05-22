@@ -5,6 +5,8 @@ from baselines.ppo2 import ppo2
 from baselines import logger
 from roam_rl.baselines.utils import VecEnvMaker
 from roam_rl.baselines.models import get_network
+from gym import spaces
+import numpy as np
 
 
 class PPO:
@@ -99,13 +101,31 @@ class PPO:
         """ """
         obs = env.reset()
         _states = None
-        # after training stochasticity of the policy is not relevant, set the actions to be mean of the policy
+        # after training stochasticity of the policy is not relevant, 
+        # set the actions to be mean of the policy
         if not stochastic:
-            # TODO: fix for discrete action spaces 
-            model.act_model.action = model.act_model.pi
+            model.act_model.action = model.act_model.pi 
+
+        def determinstic_action(pi):
+            if isinstance(env.action_space, spaces.Box):
+                return pi
+            if isinstance(env.action_space, spaces.Discrete):
+                return np.argmax(pi)
+            if isinstance(env.action_space, spaces.MultiDiscrete):
+                nvec = env.action_space.nvec
+                action = np.zeros(len(nvec))
+                start = 0
+                for i in range(len(nvec)):
+                    action[i] = np.argmax(pi[0][start:start+nvec[i]])
+                    start += nvec[i]
+                return action
 
         while True:
             action, _, _states, _ = model.step(obs)
+            if not stochastic:
+                # find action from pi
+                action = determinstic_action(action)
+
             # pylint: disable=W0612
             obs, rewards, dones, info = env.step(action)
             env.render()
