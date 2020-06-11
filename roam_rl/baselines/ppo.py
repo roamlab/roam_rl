@@ -131,9 +131,8 @@ class PPO:
             env.render()
 
     @staticmethod
-    def get_experiment_dir(path_to_experiments, robot_name, experiment_no):
-        experiment_dir = os.path.join(path_to_experiments, 'experiments', robot_name, 'ppo', 'experiment_'\
-                                      + str(experiment_no).zfill(2))
+    def get_experiment_dir(path_to_experiments, experiment_no):
+        experiment_dir = os.path.join(path_to_experiments, 'experiment_'+ str(experiment_no).zfill(2))
         os.makedirs(experiment_dir, exist_ok=True)
         return experiment_dir
 

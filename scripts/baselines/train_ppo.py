@@ -10,8 +10,7 @@ def main(args):
     config = ConfigParser()
     config.read(config_file)
     experiment_no = config.get('experiment', 'experiment_no')
-    robot_name = config.get('experiment', 'robot_name')
-    experiment_dir = PPO.get_experiment_dir(os.environ['EXPERIMENTS_DIR'], robot_name, experiment_no)
+    experiment_dir = PPO.get_experiment_dir(os.environ['EXPERIMENTS_DIR'], experiment_no)
     config_path = PPO.get_config_path(experiment_dir, experiment_no)
     config.save(config_path)
 

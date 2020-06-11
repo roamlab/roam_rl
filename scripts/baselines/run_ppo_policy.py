@@ -10,8 +10,7 @@ def main(args):
     run_config = ConfigParser()
     run_config.read(run_config_file)
     experiment_no = run_config.get('experiment', 'experiment_no')
-    robot_name = run_config.get('experiment', 'robot_name')
-    experiment_dir = PPO.get_experiment_dir(os.environ["EXPERIMENTS_DIR"], robot_name, experiment_no)
+    experiment_dir = PPO.get_experiment_dir(os.environ["EXPERIMENTS_DIR"], experiment_no)
     load_model_seed = run_config.get('experiment', 'load_model_seed')
     stochastic = run_config.getboolean('experiment', 'stochastic', fallback=False)
 
@@ -19,7 +18,7 @@ def main(args):
     copy_sections = run_config.getlist('experiment', 'copy_sections')
 
     config_file = PPO.get_config_path(experiment_dir, experiment_no)
-    assert os.path.exists(config_file), 'config file does not exist'
+    assert os.path.exists(config_file), 'config file does not exist in experiment dir'
 
     config = ConfigParser()
     config.read(config_file)
