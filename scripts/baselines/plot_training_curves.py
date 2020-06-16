@@ -14,9 +14,8 @@ def main(argv):
     run_config = ConfigParser()
     run_config.read(config_file)
     experiment_no = run_config.get('experiment', 'experiment_no')
-    robot_name = run_config.get('experiment', 'robot_name')
 
-    experiment_dir = PPO.get_experiment_dir(path_to_experiments, robot_name, experiment_no)
+    experiment_dir = PPO.get_experiment_dir(path_to_experiments, experiment_no)
     config_file = PPO.get_config_path(experiment_dir, experiment_no)
     config = ConfigParser()
     config.read(config_file)
