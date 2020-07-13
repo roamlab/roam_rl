@@ -21,11 +21,11 @@ class MLP(NetworkFn):
         if config.has_option(section, 'num_layers'):
             network_args['num_layers'] = config.getint(section, 'num_layers')
         if config.has_option(section, 'num_hidden'):
-            network_args['num_hidden'] = config.getint(section, 'num_layers')
+            network_args['num_hidden'] = config.getint(section, 'num_hidden')
         if config.has_option(section, 'activation'):
             network_args['activation'] = eval(config.get(section, 'activation'))
         if config.has_option(section, 'layer_norm'):
-            network_args['layer_norm'] = config.getboolean(section, 'activation')
+            network_args['layer_norm'] = config.getboolean(section, 'layer_norm')
         self._network_fn = get_network_builder('mlp')(**network_args)
 
 class LSTM(NetworkFn):
