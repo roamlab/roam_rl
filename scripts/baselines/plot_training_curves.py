@@ -20,10 +20,10 @@ def main(argv):
     config = ConfigParser()
     config.read(config_file)
 
-    plot_training(experiment_no, robot_name, experiment_dir)
+    plot_training(experiment_no, experiment_dir)
 
 
-def plot_training(experiment_no, robot_name, experiment_dir):
+def plot_training(experiment_no, experiment_dir):
     results = plot_util.load_results(experiment_dir, verbose=True)
     results.sort(key=lambda x: x.dirname)
     fig, ax = plt.subplots()
@@ -42,7 +42,7 @@ def plot_training(experiment_no, robot_name, experiment_dir):
     plt.tight_layout(pad=2)
     plt.xlabel('time steps')
     plt.ylabel('episode_reward')
-    plt.title('experiment_{} | {}'.format(experiment_no, robot_name), fontsize=10)
+    plt.title('experiment_{}'.format(experiment_no), fontsize=10)
     plt.legend([os.path.basename(r.dirname) for r in results])
     plt.savefig(os.path.join(experiment_dir, 'training_{}.png'.format(experiment_no)))
     plt.show()
