@@ -7,7 +7,7 @@ from roam_rl.baselines.utils import VecEnvMaker
 from roam_rl.baselines.models import get_network
 from gym import spaces
 import numpy as np
-
+from roam_rl import utils
 
 class PPO:
 
@@ -67,7 +67,7 @@ class PPO:
 
         # Create vec env
         set_global_seeds(self.seed)
-        logdir = self.get_log_dir(self.experiment_dir, self.seed)   # setup ppo logging
+        logdir = utils.get_log_dir(self.experiment_dir, self.seed)   # setup ppo logging
         logger.configure(dir=logdir, format_strs=['stdout', 'log', 'csv', 'tensorboard'])
         monitor_file_path = os.path.join(logdir, 'monitor.csv')
         env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path)
@@ -77,7 +77,7 @@ class PPO:
         model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path)   # learn model
 
         # Save
-        model.save(self.get_model_path(self.experiment_dir, self.seed))
+        model.save(utils.get_model_path(self.experiment_dir, self.seed))
         env.close()
 
     def set_experiment_dir(self, dir_name):
@@ -92,7 +92,7 @@ class PPO:
 
         # train for 0 timesteps to load
         self.params['total_timesteps'] = 0
-        model_path = self.get_model_path(self.experiment_dir, model_seed, model_checkpoint)
+        model_path = utils.get_model_path(self.experiment_dir, model_seed, model_checkpoint)
         # pylint: disable=E1125
         model = self._learn(env=env, **self.params, load_path=model_path)
         return model, env
@@ -129,29 +129,3 @@ class PPO:
             # pylint: disable=W0612
             obs, rewards, dones, info = env.step(action)
             env.render()
-
-    @staticmethod
-    def get_experiment_dir(path_to_experiments, experiment_no):
-        experiment_dir = os.path.join(path_to_experiments, 'experiment_'+ str(experiment_no).zfill(2))
-        os.makedirs(experiment_dir, exist_ok=True)
-        return experiment_dir
-
-    @staticmethod
-    def get_model_path(experiments_dir, seed, model_checkpoint=None):
-        model_dir = os.path.join(experiments_dir, 'seed-{}'.format(seed))
-        os.makedirs(model_dir, exist_ok=True)
-        if model_checkpoint:
-            model_path = os.path.join(model_dir, 'checkpoints/{}'.format(str(model_checkpoint).zfill(5)))
-        else:
-            model_path = os.path.join(model_dir, 'model_{}.pkl'.format(seed))
-        return model_path
-
-    @staticmethod
-    def get_log_dir(experiments_dir, seed):
-        logdir = os.path.join(experiments_dir, 'seed-{}'.format(seed))
-        os.makedirs(logdir, exist_ok=True)
-        return logdir
-
-    @staticmethod
-    def get_config_path(load_dir, experiment_no):
-        return os.path.join(load_dir, 'config_' + str(experiment_no).zfill(2) + '.cfg')
