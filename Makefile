@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-.PHONY: setup test-env common default gpu no-avx
+.PHONY: setup test-env common default gpu
 
 default: test-env
 	pip uninstall --yes tensorflow tensorflow-gpu
@@ -36,9 +36,4 @@ common:
 gpu: test-env
 	pip uninstall --yes tensorflow tensorflow-gpu
 	pip install tensorflow-gpu==1.14
-	make common
-
-no-avx: test-env
-	pip uninstall --yes tensorflow tensorflow-gpu
-	pip install tensorflow==1.5
 	make common
