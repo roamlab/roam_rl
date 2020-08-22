@@ -3,6 +3,7 @@ from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
 from baselines.common.vec_env.shmem_vec_env import ShmemVecEnv
 from baselines.common.vec_env.vec_monitor import VecMonitor
 from baselines.common.vec_env.vec_normalize import VecNormalize
+from gym.utils.seeding import hash_seed
 from copy import deepcopy
 
 
@@ -39,6 +40,7 @@ class VecEnvMaker(object):
         for i in range(self.nenvs):
             env_makers += [deepcopy(env_maker)]
             if seed is not None:
+                seed = hash_seed(seed)
                 env_makers[i].set_seed(seed + i)
 
         # Create the vectorized envs
