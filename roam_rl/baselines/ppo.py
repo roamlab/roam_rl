@@ -36,6 +36,9 @@ class PPO:
 
         self.seed = config.getint(section, 'seed')
 
+        info_keywords_str = config.get(section, 'info_keywords', fallback='')
+        self.info_keywords = eval('("'+info_keywords_str+'",)')
+
     def _get_parameter_descr_dict(self):
 
         """
@@ -70,11 +73,11 @@ class PPO:
         logdir = utils.get_log_dir(self.experiment_dir, self.seed)   # setup ppo logging
         logger.configure(dir=logdir, format_strs=['stdout', 'log', 'csv', 'tensorboard'])
         monitor_file_path = os.path.join(logdir, 'monitor.csv')
-        env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path)
+        env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path, info_keywords=self.info_keywords)
 
         # Learn
         # pylint: disable=E1125
-        model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path)   # learn model
+        model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path, extra_keys=self.info_keywords)   # learn model
 
         # Save
         model.save(utils.get_model_path(self.experiment_dir, self.seed))
