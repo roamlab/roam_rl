@@ -36,8 +36,11 @@ class PPO:
 
         self.seed = config.getint(section, 'seed')
 
-        info_keywords_str = config.get(section, 'info_keywords', fallback='')
-        self.info_keywords = eval('("'+info_keywords_str+'",)')
+        info_keywords_str = config.get(section, 'info_keywords', fallback=None)
+        if info_keywords_str:
+            self.info_keywords = eval('("'+info_keywords_str+'",)')
+        else:
+            self.info_keywords = ()
 
     def _get_parameter_descr_dict(self):
 
