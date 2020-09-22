@@ -58,7 +58,7 @@ class PPO:
             'value_network': 'str',
             'log_interval': 'int',
             'save_interval': 'int',
-            'total_timesteps': 'int'  # to read int from int sci notation
+            'total_timesteps': 'int'
         }
 
         return parameters
