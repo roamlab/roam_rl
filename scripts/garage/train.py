@@ -3,6 +3,8 @@ from roam_rl import utils
 from confac import ConfigParser
 from confac import make
 import os
+import torch
+from garage.torch import set_gpu_mode
 
 def main(args):
 
@@ -19,6 +21,7 @@ def main(args):
     algo.train()
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='A string specifying the path to a config file')
     arg = parser.parse_args()

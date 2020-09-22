@@ -16,7 +16,7 @@ from garage.torch.policies import TanhGaussianMLPPolicy
 from garage.torch.q_functions import ContinuousMLPQFunction
 import os
 from confac import make
-
+from garage.sampler import RaySampler
 
 class SAC:
 
@@ -43,6 +43,11 @@ class SAC:
         self.buffer_batch_size = config.getint(section, 'buffer_batch_size', fallback=256)
         self.reward_scale = config.getfloat(section, 'reward_scale', fallback=1.)
         self.steps_per_epoch = config.getint(section, 'steps_per_epoch', fallback=1)
+        self.batch_size = config.getint(section, 'batch_size', fallback=1000)
+        self.n_epochs = config.getint(section, 'n_epochs', fallback=1000)
+        self.parallel_sampling = config.getboolean(section, 'parallel_sampling', fallback=False)
+        if self.parallel_sampling:
+            self.n_workers = config.getint(section, 'n_workers')
 
     def set_experiment_dir(self, experiment_dir):
         self.experiment_dir = experiment_dir
@@ -51,7 +56,7 @@ class SAC:
         
         # define
         @wrap_experiment(snapshot_mode=self.snapshot_mode, log_dir=self.experiment_dir)
-        def sac(ctxt=None):
+        def run(ctxt=None):
             """ Set up environment and algorithm and run the task.
 
             Args:
@@ -62,7 +67,7 @@ class SAC:
 
             """
             deterministic.set_seed(self.seed)
-            runner = LocalRunner(snapshot_config=ctxt)
+            runner = LocalRunner(snapshot_config=ctxt, max_cpus=32)
             env = GarageEnv(normalize(self.env_maker()))
 
             policy = TanhGaussianMLPPolicy(
@@ -105,10 +110,13 @@ class SAC:
                 set_gpu_mode(False)
             algo.to()
             
-            runner.setup(algo=algo, env=env, sampler_cls=LocalSampler)
-            runner.train(n_epochs=10, batch_size=1000)
-        
-        # call
-        sac()
+            if self.parallel_sampling:
+                runner.setup(algo=algo, env=env, sampler_cls=RaySampler, n_workers=self.n_workers)
+            else:
+                runner.setup(algo=algo, env=env, sampler_cls=LocalSampler)
+
+            runner.train(n_epochs=self.n_epochs, batch_size=self.batch_size)
+
+        run()
 
 
