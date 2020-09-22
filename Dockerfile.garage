@@ -91,7 +91,6 @@ RUN touch /root/.mujoco/mjkey.txt && pip install mujoco_py && rm /root/.mujoco/m
     rm -r /root/.cache/pip
 
 COPY . /root/code/roam_rl/
-COPY mjkey.txt /root/.mujoco/mjkey.txt
 
 CMD /bin/bash
 
