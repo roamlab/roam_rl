@@ -63,7 +63,7 @@ class PPO:
 
         return parameters
 
-    def learn(self, model_path=None):
+    def train(self, model_path=None):
 
         # Create vec env
         set_global_seeds(self.seed)

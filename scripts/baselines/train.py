@@ -16,7 +16,7 @@ def main(args):
     
     algo = make(config, config.get('experiment', 'algo'))
     algo.set_experiment_dir(experiment_dir)
-    algo.learn()
+    algo.train()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
