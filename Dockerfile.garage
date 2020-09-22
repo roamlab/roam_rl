@@ -86,11 +86,12 @@ RUN pip install --upgrade pip
 RUN touch /root/.mujoco/mjkey.txt && pip install mujoco_py && rm /root/.mujoco/mjkey.txt && \
     pip install git+https://git@github.com/rlworkgroup/garage@v2020.06.3#egg=garage&& \
     pip install git+https://git@github.com/roamlab/confac@master#egg=confac && \
-	pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env && \
-	pip install -e . && \
+	  pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env && \
+	  pip install -e . && \
     rm -r /root/.cache/pip
 
 COPY . /root/code/roam_rl/
+COPY mjkey.txt /root/.mujoco/mjkey.txt
 
 CMD /bin/bash
 
