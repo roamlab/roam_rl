@@ -14,14 +14,14 @@ class HIPPO(PPO):
 
     def _get_parameter_descr_dict(self):
 
-        hippo_parameters = {
-            'nbatch': 'int',
-            'mode': 'str',
-            'use_buffer': 'bool',
-            'buffer_capacity': 'int',
-            'hindsight': 'float'
-        }
-
-        return super()._get_parameter_descr_dict().update(hippo_parameters)
-
-    
+        parameters =  super()._get_parameter_descr_dict()
+        parameters.update(
+            {
+                'nbatch': 'int',
+                'mode': 'str',
+                'use_buffer': 'bool',
+                'buffer_capacity': 'int',
+                'hindsight': 'float'
+            }
+        )
+        return parameters
