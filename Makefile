@@ -31,6 +31,7 @@ common:
 	pip install git+https://git@github.com/roamlab/confac@master#egg=confac
 	pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env
 	pip install --force-reinstall git+https://git@github.com/openai/baselines@master#egg=baselines
+	pip install --force-reinstall git+https://git@github.com/roamlab/baselines-hippo@master#egg=baselines-hippo
 	pip install -e .
 
 gpu: test-env
