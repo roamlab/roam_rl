@@ -1,8 +1,10 @@
 import argparse
-from roam_rl.baselines.ppo import PPO
 from roam_rl import utils
 from confac import ConfigParser
+from confac import make
 import os
+import torch
+from garage.torch import set_gpu_mode
 
 def main(args):
 
@@ -14,15 +16,13 @@ def main(args):
     experiment_dir = utils.get_experiment_dir(os.environ['EXPERIMENTS_DIR'], experiment_no, mkdir=True)
     config_path = utils.get_config_path(experiment_dir, experiment_no)
     config.save(config_path)
-
-    ppo_section = config.get('experiment', 'ppo')
-    ppo = PPO(config, ppo_section)
-    ppo.set_experiment_dir(experiment_dir)
-    ppo.learn()
+    algo = make(config, config.get('experiment', 'algo'))
+    algo.set_experiment_dir(experiment_dir)
+    algo.train()
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='A string specifying the path to a config file')
     arg = parser.parse_args()
     main(arg)
-

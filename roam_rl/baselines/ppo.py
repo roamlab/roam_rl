@@ -64,12 +64,12 @@ class PPO:
             'value_network': 'str',
             'log_interval': 'int',
             'save_interval': 'int',
-            'total_timesteps': 'int'  # to read int from int sci notation
+            'total_timesteps': 'int'
         }
 
         return parameters
 
-    def learn(self, model_path=None):
+    def train(self, model_path=None):
 
         # Create vec env
         set_global_seeds(self.seed)
