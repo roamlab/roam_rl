@@ -1,7 +1,6 @@
 import argparse
-from roam_rl.baselines.ppo import PPO
 from roam_rl import utils
-from confac import ConfigParser
+from confac import ConfigParser, make
 import os
 
 def main(args):
@@ -14,11 +13,10 @@ def main(args):
     experiment_dir = utils.get_experiment_dir(os.environ['EXPERIMENTS_DIR'], experiment_no, mkdir=True)
     config_path = utils.get_config_path(experiment_dir, experiment_no)
     config.save(config_path)
-
-    ppo_section = config.get('experiment', 'ppo')
-    ppo = PPO(config, ppo_section)
-    ppo.set_experiment_dir(experiment_dir)
-    ppo.learn()
+    
+    algo = make(config, config.get('experiment', 'algo'))
+    algo.set_experiment_dir(experiment_dir)
+    algo.train()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

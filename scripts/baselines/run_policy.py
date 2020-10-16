@@ -26,12 +26,11 @@ def main(args):
     for section in copy_sections:
         run_config.dump_section(section, recursive=True, dump=config)
 
-    ppo_section = config.get('experiment', 'ppo')
-    ppo = PPO(config, ppo_section)
-    ppo.set_experiment_dir(experiment_dir)
+    algo = PPO(config, config.get('experiment', 'algo'))
+    algo.set_experiment_dir(experiment_dir)
 
-    model, env = ppo.load(model_seed=load_model_seed, model_checkpoint=model_checkpoint, env_seed=env_seed)
-    ppo.run(model=model, env=env, stochastic=stochastic)
+    model, env = algo.load(model_seed=load_model_seed, model_checkpoint=model_checkpoint, env_seed=env_seed)
+    algo.run(model=model, env=env, stochastic=stochastic)
 
 
 if __name__ == "__main__":
