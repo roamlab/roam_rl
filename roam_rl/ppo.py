@@ -1,13 +1,13 @@
 import os
-from confac import make
 from baselines.common import set_global_seeds
 from baselines.ppo2 import ppo2
 from baselines import logger
-from roam_rl.baselines.utils import VecEnvMaker
-from roam_rl.baselines.models import get_network
+from roam_rl.utils.vec_env_maker import VecEnvMaker
+from roam_rl.utils.models import get_network
 from gym import spaces
 import numpy as np
-from roam_rl import utils
+from roam_rl.utils import path_utils
+from roam_rl.utils import config_utils
 
 class PPO:
 
@@ -30,11 +30,13 @@ class PPO:
 
         # env
         env_maker_section = config.get(section, 'env_maker')
-        self.env_maker = make(config, env_maker_section)
+        self.env_maker = config_utils.initfromconfig(config, env_maker_section)
         vec_env_maker_section = config.get(section, 'vec_env_maker')
         self.vec_env_maker = VecEnvMaker(config, vec_env_maker_section)
 
         self.seed = config.getint(section, 'seed')
+
+        self.info_keywords = eval(config.get(section, 'info_keywords', fallback='()'))
 
     def _get_parameter_descr_dict(self):
 
@@ -67,17 +69,17 @@ class PPO:
 
         # Create vec env
         set_global_seeds(self.seed)
-        logdir = utils.get_log_dir(self.experiment_dir, self.seed)   # setup ppo logging
+        logdir = path_utils.get_log_dir(self.experiment_dir, self.seed)   # setup ppo logging
         logger.configure(dir=logdir, format_strs=['stdout', 'log', 'csv', 'tensorboard'])
         monitor_file_path = os.path.join(logdir, 'monitor.csv')
-        env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path)
+        env = self.vec_env_maker(self.env_maker, self.seed, monitor_file=monitor_file_path, info_keywords=self.info_keywords)
 
         # Learn
         # pylint: disable=E1125
-        model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path)   # learn model
+        model = self._learn(env=env, **self.params, seed=self.seed, load_path=model_path, extra_keys=self.info_keywords)   # learn model
 
         # Save
-        model.save(utils.get_model_path(self.experiment_dir, self.seed))
+        model.save(path_utils.get_model_path(self.experiment_dir, self.seed))
         env.close()
 
     def set_experiment_dir(self, dir_name):
@@ -92,7 +94,7 @@ class PPO:
 
         # train for 0 timesteps to load
         self.params['total_timesteps'] = 0
-        model_path = utils.get_model_path(self.experiment_dir, model_seed, model_checkpoint)
+        model_path = path_utils.get_model_path(self.experiment_dir, model_seed, model_checkpoint)
         # pylint: disable=E1125
         model = self._learn(env=env, **self.params, load_path=model_path)
         return model, env
@@ -101,10 +103,10 @@ class PPO:
         """ """
         obs = env.reset()
         _states = None
-        # after training stochasticity of the policy is not relevant, 
+        # after training stochasticity of the policy is not relevant,
         # set the actions to be mean of the policy
         if not stochastic:
-            model.act_model.action = model.act_model.pi 
+            model.act_model.action = model.act_model.pi
 
         def determinstic_action(pi):
             if isinstance(env.action_space, spaces.Box):

@@ -7,7 +7,7 @@ from gym.utils.seeding import hash_seed
 from copy import deepcopy
 
 
-class VecEnvMaker(object):
+class VecEnvMaker:
 
     """ Callable class that takes instance of roam_learning.robot_env.EnvMaker and returns either a DummyVecEnv,
      SubprocVecEnv or ShmemVecEnv """
@@ -26,7 +26,7 @@ class VecEnvMaker(object):
         self.normalize_obs = config.getboolean(section, 'normalize_obs', fallback=False)
         self.normalize_ret = config.getboolean(section, 'normalize_ret', fallback=False)
 
-    def __call__(self, env_maker, seed=None, monitor_file=None):
+    def __call__(self, env_maker, seed=None, monitor_file=None, info_keywords=()):
         """
         :param env_maker: instance of roam_learning.robot_env.EnvMaker
         :param seed: int that is used to generate seeds for vectorized envs
@@ -48,7 +48,7 @@ class VecEnvMaker(object):
 
         # Monitor the envs before normalization
         if monitor_file is not None:
-            envs = VecMonitor(envs, filename=monitor_file)
+            envs = VecMonitor(envs, filename=monitor_file, info_keywords=info_keywords)
         if self.normalize_obs or self.normalize_ret:
             envs = VecNormalize(envs, ob=self.normalize_obs, ret=self.normalize_ret, use_tf=True)
         return envs

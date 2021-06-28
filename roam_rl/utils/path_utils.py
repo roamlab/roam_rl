@@ -21,4 +21,4 @@ def get_log_dir(experiments_dir, seed):
     return logdir
 
 def get_config_path(load_dir, experiment_no):
-    return os.path.join(load_dir, 'config_' + str(experiment_no).zfill(2) + '.cfg')    
+    return os.path.join(load_dir, 'config_' + str(experiment_no).zfill(2) + '.cfg')

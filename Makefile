@@ -8,7 +8,7 @@ default: test-env
 	make common
 
 # dependencies for baselines, we use garage's well maintained setup script
-setup:	
+setup:
 	if [ -d "tmp" ]; then\
 	    rm -rf tmp;\
 	fi
@@ -27,7 +27,7 @@ test-env:
 	    exit 1;\
 	fi
 
-common:  
+common:
 	pip install git+https://git@github.com/roamlab/confac@master#egg=confac
 	pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env
 	pip install --force-reinstall git+https://git@github.com/openai/baselines@master#egg=baselines
