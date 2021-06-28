@@ -16,11 +16,12 @@ def main(args):
     
     algo = make(config, config.get('experiment', 'algo'))
     algo.set_experiment_dir(experiment_dir)
-    algo.train()
+    algo.train(model_path=args.model_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='A string specifying the path to a config file')
+    parser.add_argument('--model_path', help='path to the model to be loaded')
     arg = parser.parse_args()
     main(arg)
 
