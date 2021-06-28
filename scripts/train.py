@@ -1,6 +1,6 @@
 import argparse
-from roam_rl import utils
-from confac import ConfigParser, make
+from roam_rl.utils.path_utils import get_experiment_dir, get_config_path
+from roam_rl.utils.config_utils import ConfigParser, initfromconfig
 import os
 
 def main(args):
@@ -10,10 +10,10 @@ def main(args):
     config.read(config_file)
     experiment_no = config.get('experiment', 'experiment_no')
     os.makedirs(os.environ['EXPERIMENTS_DIR'], exist_ok=True)
-    experiment_dir = utils.get_experiment_dir(os.environ['EXPERIMENTS_DIR'], experiment_no, mkdir=True)
-    config_path = utils.get_config_path(experiment_dir, experiment_no)
+    experiment_dir = get_experiment_dir(os.environ['EXPERIMENTS_DIR'], experiment_no, mkdir=True)
+    config_path = get_config_path(experiment_dir, experiment_no)
     config.save(config_path)
-    algo = make(config, config.get('experiment', 'algo'))
+    algo = initfromconfig(config, config.get('experiment', 'algo'))
     algo.set_experiment_dir(experiment_dir)
     algo.train(model_path=args.model_path)
 

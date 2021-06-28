@@ -7,7 +7,7 @@ from gym.utils.seeding import hash_seed
 from copy import deepcopy
 
 
-class VecEnvMaker(object):
+class VecEnvMaker:
 
     """ Callable class that takes instance of roam_learning.robot_env.EnvMaker and returns either a DummyVecEnv,
      SubprocVecEnv or ShmemVecEnv """

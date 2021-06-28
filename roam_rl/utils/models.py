@@ -3,7 +3,7 @@ import tensorflow as tf
 from baselines.a2c import utils
 from baselines.a2c.utils import conv, fc, conv_to_fc, batch_to_seq, seq_to_batch
 from baselines.common.models import get_network_builder
-from confac import make
+from .config_utils import initfromconfig
 
 class NetworkFn:
 
@@ -149,6 +149,6 @@ def get_network(config, section):
         _type = config.get(section, 'type')
         return _mapping[_type](config, section)
     elif config.has_option(section, 'entrypoint'):
-        return make(config, section)
+        return initfromconfig(config, section)
     else:
         raise ValueError("network unknown")
