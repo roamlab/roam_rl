@@ -72,7 +72,6 @@ RUN mkdir -p /root/.mujoco && \
 COPY README.md /root/code/roam_rl/README.md
 COPY roam_rl/__init__.py /root/code/roam_rl/roam_rl/__init__.py
 COPY setup.py /root/code/roam_rl/setup.py
-COPY Makefile /root/code/roam_rl/Makefile
 WORKDIR /root/code/roam_rl
 
 # Create virtualenv
@@ -86,11 +85,14 @@ RUN pip install --upgrade pip
 # We need a MuJoCo key to install mujoco_py
 # In this step only the presence of the file mjkey.txt is required, so we only
 # create an empty file
-RUN touch /root/.mujoco/mjkey.txt && \
-  pip install mujoco_py && \
-  make default && \
-  rm -r /root/.cache/pip && \
-  rm /root/.mujoco/mjkey.txt
+RUN touch /root/.mujoco/mjkey.txt && pip install mujoco_py &&  rm /root/.mujoco/mjkey.txt && \
+  pip uninstall --yes tensorflow tensorflow-gpu && pip install tensorflow==1.14 && \
+  pip install git+https://git@github.com/roamlab/confac@master#egg=confac && \
+	pip install git+https://git@github.com/roamlab/roam_env@master#egg=roam_env && \
+	pip install --force-reinstall git+https://git@github.com/openai/baselines@master#egg=baselines && \
+	pip install --force-reinstall git+https://git@github.com/roamlab/baselines-hippo@master#egg=baselines-hippo && \
+	pip install -e . && \
+  rm -r /root/.cache/pip
 
 COPY . /root/code/roam_rl/
 
